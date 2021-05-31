@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>693</width>
-    <height>609</height>
+    <width>544</width>
+    <height>682</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -68,6 +68,9 @@
        </item>
        <item>
         <widget class="QFrame" name="frame_20">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -84,7 +87,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Velocidad </string>
+             <string>Velocidad (m/s)</string>
             </property>
            </widget>
           </item>
@@ -143,32 +146,10 @@
              <enum>QLCDNumber::Filled</enum>
             </property>
             <property name="value" stdset="0">
-             <double>3.000000000000000</double>
+             <double>0.000000000000000</double>
             </property>
             <property name="intValue" stdset="0">
-             <number>3</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelVelDeseada">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <family>Uroob</family>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>m/s</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+             <number>0</number>
             </property>
            </widget>
           </item>
@@ -177,6 +158,9 @@
        </item>
        <item>
         <widget class="QFrame" name="frame_19">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 255);</string>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -199,7 +183,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Altura </string>
+             <string>    Altura (m)   </string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -238,28 +222,6 @@
             </property>
             <property name="digitCount">
              <number>3</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelUnidadesAltura">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <family>Uroob</family>
-              <pointsize>20</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>m</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -361,7 +323,7 @@ border-color: rgb(252, 233, 79);</string>
                    <enum>QFrame::NoFrame</enum>
                   </property>
                   <property name="intValue" stdset="0">
-                   <number>5</number>
+                   <number>0</number>
                   </property>
                  </widget>
                 </item>
@@ -394,7 +356,7 @@ border-color: rgb(252, 233, 79);</string>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_10">
                 <item>
-                 <widget class="QLabel" name="lbPorcentaje">
+                 <widget class="QLabel" name="lbTiempo">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                     <horstretch>0</horstretch>
@@ -408,12 +370,12 @@ border-color: rgb(252, 233, 79);</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Altura</string>
+                   <string>Tiempo</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLCDNumber" name="lcdAltitudeDroneTeorica">
+                 <widget class="QLCDNumber" name="lcdTiempoTeorico">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                     <horstretch>0</horstretch>
@@ -424,12 +386,12 @@ border-color: rgb(252, 233, 79);</string>
                    <enum>QFrame::NoFrame</enum>
                   </property>
                   <property name="intValue" stdset="0">
-                   <number>3</number>
+                   <number>0</number>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_9">
+                 <widget class="QLabel" name="labelTiempoTeorico">
                   <property name="font">
                    <font>
                     <family>Uroob</family>
@@ -437,7 +399,7 @@ border-color: rgb(252, 233, 79);</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>m</string>
+                   <string>s</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -457,7 +419,7 @@ border-color: rgb(252, 233, 79);</string>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_9">
                 <item>
-                 <widget class="QLabel" name="lbTiempoTeorico">
+                 <widget class="QLabel" name="lbRedundancia">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                     <horstretch>0</horstretch>
@@ -471,12 +433,12 @@ border-color: rgb(252, 233, 79);</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Tiempo</string>
+                   <string>Redundancia</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLCDNumber" name="lcdTimeOfFlyTeoric">
+                 <widget class="QLCDNumber" name="lcdRedundancia">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                     <horstretch>0</horstretch>
@@ -487,12 +449,12 @@ border-color: rgb(252, 233, 79);</string>
                    <enum>QFrame::NoFrame</enum>
                   </property>
                   <property name="intValue" stdset="0">
-                   <number>-2</number>
+                   <number>0</number>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="label_8">
+                 <widget class="QLabel" name="lbRedundancy">
                   <property name="font">
                    <font>
                     <family>Uroob</family>
@@ -500,7 +462,67 @@ border-color: rgb(252, 233, 79);</string>
                    </font>
                   </property>
                   <property name="text">
-                   <string>s</string>
+                   <string>%</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_3">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QLabel" name="lbPorcentajeCobertura">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Uroob</family>
+                    <pointsize>18</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>Cobertura</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLCDNumber" name="lcdCobertura">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelPercentage">
+                  <property name="font">
+                   <font>
+                    <family>Uroob</family>
+                    <pointsize>18</pointsize>
+                   </font>
+                  </property>
+                  <property name="text">
+                   <string>%</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -592,7 +614,7 @@ border-color: rgb(252, 233, 79);</string>
             <property name="font">
              <font>
               <family>Uroob</family>
-              <pointsize>20</pointsize>
+              <pointsize>22</pointsize>
               <weight>75</weight>
               <bold>true</bold>
              </font>
@@ -619,21 +641,72 @@ border-color: rgb(252, 233, 79);</string>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QFrame" name="frame_7">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(255, 255, 255);
-border-top-color: rgb(252, 233, 79);
-border-color: rgb(252, 233, 79);</string>
-            </property>
             <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
+             <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
+            <layout class="QHBoxLayout" name="horizontalLayout_15">
+             <item>
+              <widget class="QLabel" name="lbStado">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Uroob</family>
+                 <pointsize>18</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Estatus</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="lbStatus">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Uroob</family>
+                 <pointsize>18</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>On Ground</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_15">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
              <item>
               <widget class="QLabel" name="labelVeloDrone">
                <property name="sizePolicy">
@@ -649,7 +722,7 @@ border-color: rgb(252, 233, 79);</string>
                 </font>
                </property>
                <property name="text">
-                <string>Velocidad</string>
+                <string>Velocidad (m/s)</string>
                </property>
                <property name="textFormat">
                 <enum>Qt::AutoText</enum>
@@ -662,84 +735,6 @@ border-color: rgb(252, 233, 79);</string>
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QLabel" name="labelDistDrone">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Uroob</family>
-                 <pointsize>18</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Distancia</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="labelTiempoDrone">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Uroob</family>
-                 <pointsize>18</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Tiempo</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="labelAlturaDrone">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Uroob</family>
-                 <pointsize>18</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Altura</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame_8">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
               <widget class="QLCDNumber" name="lcdVelocityDrone">
                <property name="sizePolicy">
@@ -767,8 +762,20 @@ border-color: rgb(252, 233, 79);</string>
                </property>
               </widget>
              </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_18">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
              <item>
-              <widget class="QLCDNumber" name="lcdDistanciaDrone">
+              <widget class="QLabel" name="labelTiempoDrone">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                  <horstretch>0</horstretch>
@@ -777,20 +784,15 @@ border-color: rgb(252, 233, 79);</string>
                </property>
                <property name="font">
                 <font>
-                 <pointsize>22</pointsize>
+                 <family>Uroob</family>
+                 <pointsize>18</pointsize>
                 </font>
                </property>
-               <property name="styleSheet">
-                <string notr="true">color: rgb(114, 159, 207);</string>
+               <property name="text">
+                <string>Tiempo (m)</string>
                </property>
-               <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-               </property>
-               <property name="digitCount">
-                <number>3</number>
-               </property>
-               <property name="intValue" stdset="0">
-                <number>5</number>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -814,10 +816,44 @@ border-color: rgb(252, 233, 79);</string>
                 <enum>QFrame::NoFrame</enum>
                </property>
                <property name="digitCount">
-                <number>3</number>
+                <number>5</number>
                </property>
                <property name="intValue" stdset="0">
-                <number>-2</number>
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_24">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <item>
+              <widget class="QLabel" name="labelAlturaDrone">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Uroob</family>
+                 <pointsize>18</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Altura (m)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -841,10 +877,71 @@ border-color: rgb(252, 233, 79);</string>
                 <enum>QFrame::NoFrame</enum>
                </property>
                <property name="digitCount">
-                <number>3</number>
+                <number>4</number>
                </property>
                <property name="intValue" stdset="0">
-                <number>3</number>
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_16">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <item>
+              <widget class="QLabel" name="labelDistDrone">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Uroob</family>
+                 <pointsize>18</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Distancia (m)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLCDNumber" name="lcdDistanciaDrone">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>22</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: rgb(114, 159, 207);</string>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="digitCount">
+                <number>6</number>
+               </property>
+               <property name="intValue" stdset="0">
+                <number>0</number>
                </property>
               </widget>
              </item>
@@ -854,73 +951,49 @@ border-color: rgb(252, 233, 79);</string>
           <item>
            <widget class="QFrame" name="frame_6">
             <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
+             <enum>QFrame::StyledPanel</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
              <item>
-              <widget class="QLabel" name="label">
+              <widget class="QLabel" name="labelWaypoint">
                <property name="font">
                 <font>
                  <family>Uroob</family>
-                 <pointsize>22</pointsize>
+                 <pointsize>18</pointsize>
                 </font>
                </property>
                <property name="text">
-                <string>m/s</string>
+                <string>   Waypoint   </string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignJustify|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="label_2">
+              <widget class="QLCDNumber" name="lcdWaypoint">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="font">
                 <font>
-                 <family>Uroob</family>
                  <pointsize>22</pointsize>
                 </font>
                </property>
-               <property name="text">
-                <string>m</string>
+               <property name="styleSheet">
+                <string notr="true">color: rgb(114, 159, 207);</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
                </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="font">
-                <font>
-                 <family>Uroob</family>
-                 <pointsize>22</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>s</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_4">
-               <property name="font">
-                <font>
-                 <family>Uroob</family>
-                 <pointsize>22</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>m</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
+               <property name="digitCount">
+                <number>3</number>
                </property>
               </widget>
              </item>
@@ -1110,6 +1183,9 @@ border-color: rgb(252, 233, 79);</string>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
            <widget class="QPushButton" name="pushButtonSimulacion">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="font">
              <font>
               <family>Uroob</family>
@@ -1140,7 +1216,7 @@ color: rgb(25, 96, 215);</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>693</width>
+     <width>544</width>
      <height>22</height>
     </rect>
    </property>

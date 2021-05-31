@@ -8,7 +8,7 @@ from PIL import Image
 
 class Grid(object):
 
-    def __init__(self, gps0=1, gps1=1, gps2=1, gps3=1, takeoff=0, step=0):
+    def __init__(self, vel=0, alt = 0, gps0=1, gps1=1, gps2=1, gps3=1, takeoff=0, step=0):
         self.gps0 = gps0
         self.gps1 = gps1
         self.gps2 = gps2
@@ -16,12 +16,12 @@ class Grid(object):
         self.step = step
         self.takeOffPoint = takeoff
         self.curvePoints = []
-        self.alt0 = 5
-        self.alt1 = 5
-        self.theta = 270
+        self.alt0 = alt
+        self.alt1 = alt
+        self.theta = 0
         self.timeOfFly = 0
         self.distanceOfFly = 0
-        self.velocityOfFly = 5   # m/s
+        self.velocityOfFly = vel   # m/s
         self.GPSData = np.array([gps0, gps1, gps2, gps3])
         self.UTMData = [utm.from_latlon(cords[0], cords[1]) for cords in self.GPSData]
         self.UTMCoords = np.array([[data[0], data[1]] for data in self.UTMData])
@@ -35,11 +35,11 @@ class Grid(object):
         n = int(self.x_in_meters/self.step)
         p = int(self.y_in_meters/self.step)
         print(n, p)
-        image = Image.open("./fotos/mascara.png")
+        image = Image.open("./CoveragePathPlanning/fotos/mascara.png")
         # image.show()
         new_image = image.resize((n, p))
         # new_image.show()
-        new_image.save("./test_maps/mascara.png")
+        new_image.save("./CoveragePathPlanning/test_maps/mascara.png")
 
 
     @staticmethod

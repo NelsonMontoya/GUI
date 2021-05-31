@@ -1,13 +1,14 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from cpp_algorithms.bcd import bcd
-from cpp_algorithms.wavefront import wavefront
-from cpp_algorithms.stc import stc
-from cpp_algorithms.common_helpers import get_all_area_maps, get_random_coords, get_end_coords
-from cpp_algorithms.metrics import coverage_metrics, printer
+from .cpp_algorithms.bcd import bcd
+from .cpp_algorithms.bcd import bcd
+from .cpp_algorithms.wavefront import wavefront
+from .cpp_algorithms.stc import stc
+from .cpp_algorithms.common_helpers import get_all_area_maps, get_random_coords, get_end_coords
+from .cpp_algorithms.metrics import coverage_metrics, printer
 # from cpp_algorithms.common_helpers import plot, imshow, imshow_scatter
-from classes.builGrid import Grid
+from .classes.builGrid import Grid
 # from shapely.geometry import Polygon, Point
 # from PIL import Image
 from shapely.geometry import Polygon, LineString

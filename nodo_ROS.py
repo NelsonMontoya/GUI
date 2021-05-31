@@ -9,30 +9,33 @@ from mavros_msgs.msg import*
 from mavros_msgs.srv import*
 from sensor_msgs.msg import NavSatFix, BatteryState
 from geometry_msgs.msg import TwistStamped
+#from pymavlink import mavutil
 
 
 mavros.set_namespace()
 
 class px4AutoFlight:
-    def __init__(self, velocity=3.6, altitud = 5, drone_in_the_air = False):
+    def __init__(self, velocity=5, altitud = 5, tiempoVuelo = 0, drone_in_the_air = False):
         self.drone_in_the_air = drone_in_the_air
         self.goal_altitude = altitud
         self.altura_drone = 0.0
         self.velocity = velocity
         self.wl = []
         self.velocidad_drone = 0.0
-        self.tiempo_vuelo_drone = 0.0
+        self.tiempo_vuelo_drone = tiempoVuelo
         self.latitud_drone= 0.0
         self.longitud_drone = 0.0
         self.distancia_viaje_drone = 0.0
         self.global_position = NavSatFix()
+        # self.extended_state = ExtendedState()
+        self.extended_state = 0
         self.start_time = time()
         self.end_time = 0.0
         self.timeOne = 0.0
         self.timeTwo = 0.0
         self.start_measure = False
         self.wp_actual = 0
-        # self.cont_time = True
+        self.landed_state_confirmed = False
 
          # ROS services
         service_timeout = 30
@@ -59,8 +62,36 @@ class px4AutoFlight:
         self.position_drone_sub = rospy.Subscriber('mavros/global_position/global',NavSatFix, self.global_position_callback)
         self.velo_drone_sub = rospy.Subscriber('/mavros/global_position/raw/gps_vel', TwistStamped, self.gps_vel_callback)
         self.battery_dorne_sub = rospy.Subscriber('/mavros/battery', BatteryState, self.batery_status_callback)
-
+        self.ext_state_sub = rospy.Subscriber('mavros/extended_state',ExtendedState,self.extended_state_callback)
         
+
+    """def landedState(self, desired_landed_state):
+        rospy.loginfo("waiting for landed state | state: {0}".
+                      format(mavutil.mavlink.enums['MAV_LANDED_STATE'][
+                          desired_landed_state].name))
+
+        self.landed_state_confirmed = False
+        if self.extended_state.landed_state == desired_landed_state:
+                self.landed_state_confirmed = True
+                rospy.loginfo("landed state confirmed")"""
+
+    def extended_state_callback(self, data):
+        """if self.extended_state.vtol_state != data.vtol_state:
+            rospy.loginfo("VTOL state changed from {0} to {1}".format(
+                mavutil.mavlink.enums['MAV_VTOL_STATE']
+                [self.extended_state.vtol_state].name, mavutil.mavlink.enums[
+                    'MAV_VTOL_STATE'][data.vtol_state].name))
+
+        if self.extended_state.landed_state != data.landed_state:
+            rospy.loginfo("landed state changed from {0} to {1}".format(
+                mavutil.mavlink.enums['MAV_LANDED_STATE']
+                [self.extended_state.landed_state].name, mavutil.mavlink.enums[
+                    'MAV_LANDED_STATE'][data.landed_state].name))"""
+
+        self.extended_state = data.landed_state
+        # print(data.landed_state)
+
+    
 
     def setTakeoff(self):
         try:
@@ -79,20 +110,13 @@ class px4AutoFlight:
 
     def setArm(self):
         try:
-            self.armService(True)
-            rospy.loginfo("Arming motors OK")
+            self.vehicleArmed = self.armService(True)
+            if self.vehicleArmed:
+                rospy.loginfo("Arming motors OK")
         except rospy.ServiceException as e:
             rospy.logerr("Arming motors failed: %s"%e)
 
-
-    def readWayPoints(self, file):
-        
-        i = 0
-        with open(file, 'r') as csvfile:
-            for data in csv.reader(csvfile, delimiter = '\t'):
-                i+=1
-            j = i
-        del data
+    def setVelocityOfSimulation(self):
         wp = Waypoint()
         wp.is_current  = True
         wp.command = 178
@@ -106,6 +130,17 @@ class px4AutoFlight:
         wp.z_alt = float(0)
         wp.autocontinue = bool(int(1.0))
         self.wl.append(wp)
+
+
+    def readWayPoints(self, file):
+        
+        i = 0
+        with open(file, 'r') as csvfile:
+            for data in csv.reader(csvfile, delimiter = '\t'):
+                i+=1
+            j = i
+        del data
+        self.setVelocityOfSimulation()
 
         with open(file, 'r') as csvfile:
             for data in csv.reader(csvfile, delimiter = '\t'):
@@ -209,7 +244,7 @@ class px4AutoFlight:
 
     def WP_Callback(self, msg):
         self.wp_actual = msg.wp_seq+1
-        rospy.loginfo("MISSION Waypoint #%s reached.", self.wp_actual)
+        #rospy.loginfo("MISSION Waypoint #%s reached.", self.wp_actual)
 
     def altitude_callback(self, msg):
         self.altura_drone = msg.relative
@@ -223,58 +258,44 @@ class px4AutoFlight:
         #rospy.loginfo("Latitud: {} Longitud: {}".format(latitud, longitud)) 
 
     def gps_vel_callback(self, msg):
-        start = 0
-        if (self.altura_drone > 1.5) and (self.drone_in_the_air == False):
-            self.drone_in_the_air = True
-            self.start_measure = True
-            # self.distancia_viaje_drone = 0.0
+
+        vel_x = msg.twist.linear.x
+        vel_y = msg.twist.linear.y
+        if (abs(vel_x) > (abs(vel_y))): 
+            self.velocidad_drone = abs(vel_x)
+        else:
+            self.velocidad_drone = abs(vel_y)
+
+        # when taking off
+        if self.extended_state == 3:
             # self.start_time = time()
-        #elif (self.altura_drone >= 0.9*self.goal_altitude ):
-        #    self.start_measure = True
-            
-        elif (self.drone_in_the_air) and (self.altura_drone <=0.0):
-            self.drone_in_the_air = False
-            self.end_time = time()
-            self.start_measure = False
+            self.tiempo_vuelo_drone = time()-self.start_time
+            self.distancia_viaje_drone = 0.0
+            self.timeOne = msg.header.stamp.secs
+            self.timeTwo = self.timeOne
 
-            
-
-        
-
-        elif self.drone_in_the_air:
-            vel_x = msg.twist.linear.x
-            vel_y = msg.twist.linear.y
+        # when reached the goal altitude
+        elif self.extended_state == 2:
             self.timeOne = msg.header.stamp.secs
             # self.velocidad_drone = math.sqrt((vel_x)**2 + (vel_y)**2)
-            if (abs(vel_x) > (abs(vel_y))): 
-                self.velocidad_drone= abs(vel_x)
-            else:
-                self.velocidad_drone = abs(vel_y)
-            self.tiempo_vuelo_drone=time()-self.start_time
+            self.tiempo_vuelo_drone = time()-self.start_time
             self.distancia_viaje_drone+=self.velocidad_drone*(self.timeOne - self.timeTwo)
-            self.timeTwo =self.timeOne
-            
-        elif (self.drone_in_the_air == False) and (self.altura_drone <=0.0):
+            self.timeTwo = self.timeOne
+        # when the UAV landing
+        elif self.extended_state == 4:
+            self.end_time = time()
+            self.tiempo_vuelo_drone = self.end_time -self.start_time
+            self.timeOne = msg.header.stamp.secs
+            self.timeTwo = self.timeOne
+        # when the UAV is on the ground
+        elif self.extended_state == 1:
             self.tiempo_vuelo_drone = self.end_time -self.start_time
 
-
-        rospy.loginfo("velocidad drone:{0:.2f}".format(self.velocidad_drone))
-        rospy.loginfo("tiempo recorrido:{0:.2f}".format(self.tiempo_vuelo_drone))
-        rospy.loginfo("distancia recorrido:{0:.2f}".format(self.distancia_viaje_drone))
-        
-        
+        #rospy.loginfo("Tiempo de Vuelo: {0:.2f}".format(self.tiempo_vuelo_drone))
+        #rospy.loginfo("Distancia Recorrida: {0:.2f}".format(self.distancia_viaje_drone))
+            
 
             
-        #if (abs(vel_x) > (abs(vel_y))): 
-        #    velocidad_drone = abs(vel_x)
-        #else:
-        #    velocidad_drone = abs(vel_y)
-        
-        
-        
-
-
-
     def batery_status_callback(self, msg):
         volts = msg.voltage
         current = msg.current

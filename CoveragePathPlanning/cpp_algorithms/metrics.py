@@ -49,7 +49,7 @@ def coverage_metrics(area_map, path):
     coverage = vis_points / total_points_nobs
     redundancy = p_len / vis_points - 1
 
-    return {
+    """return {
         "points_to_visit": total_points_nobs,
         "obstacle_points": obs_points,
         "points_visited": vis_points,
@@ -59,7 +59,8 @@ def coverage_metrics(area_map, path):
         "area_shape": area_map.shape,
         "distance to travel": traveled,
         "total curves": curves
-    }
+    }"""
+    return coverage, redundancy
 
 
 def fuel_metrics(fuel_paths, fuel_capacity, full_path, area_map):
