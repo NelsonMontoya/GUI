@@ -4,6 +4,8 @@ import mavros
 import rospy
 import csv
 import math
+import utm
+import numpy as np
 from time import time
 from mavros_msgs.msg import*
 from mavros_msgs.srv import*
@@ -23,8 +25,8 @@ class px4AutoFlight:
         self.wl = []
         self.velocidad_drone = 0.0
         self.tiempo_vuelo_drone = tiempoVuelo
-        self.latitud_drone= 0.0
-        self.longitud_drone = 0.0
+        self.gpsOne = (0, 0)
+        self.gpsTwo = (0, 0)
         self.distancia_viaje_drone = 0.0
         self.global_position = NavSatFix()
         # self.extended_state = ExtendedState()
@@ -251,9 +253,11 @@ class px4AutoFlight:
         # rospy.loginfo("Altitud: %s", self.altura_drone)
 
     def global_position_callback(self, msg):
-        # funcional los parametros 
-        self.latitud_drone= msg.latitude
-        self.longitud_drone = msg.longitude
+        #self.latitud_drone_next= msg.latitude
+        # self.longitud_drone_next = msg.longitude
+        self.gpsOne = (msg.latitude, msg.longitude)
+        
+    
         #self.global_position_longitude = data.header.status.longitude
         #rospy.loginfo("Latitud: {} Longitud: {}".format(latitud, longitud)) 
 
@@ -271,16 +275,19 @@ class px4AutoFlight:
             # self.start_time = time()
             self.tiempo_vuelo_drone = time()-self.start_time
             self.distancia_viaje_drone = 0.0
-            self.timeOne = msg.header.stamp.secs
-            self.timeTwo = self.timeOne
+            # self.timeOne = msg.header.stamp.secs
+            # self.timeTwo = self.timeOne
+            self.gpsTwo = self.gpsOne
 
         # when reached the goal altitude
         elif self.extended_state == 2:
-            self.timeOne = msg.header.stamp.secs
+            # self.timeOne = msg.header.stamp.secs
             # self.velocidad_drone = math.sqrt((vel_x)**2 + (vel_y)**2)
             self.tiempo_vuelo_drone = time()-self.start_time
-            self.distancia_viaje_drone+=self.velocidad_drone*(self.timeOne - self.timeTwo)
-            self.timeTwo = self.timeOne
+            self.distancia_viaje_drone+= self.DistGPS(self.gpsOne, self.gpsTwo,self.altura_drone, self.altura_drone)
+            self.gpsTwo = self.gpsOne
+            # self.distancia_viaje_drone+=self.velocidad_drone*(self.timeOne - self.timeTwo)
+            #self.timeTwo = self.timeOne
         # when the UAV landing
         elif self.extended_state == 4:
             self.end_time = time()
@@ -301,6 +308,11 @@ class px4AutoFlight:
         current = msg.current
         percent = msg.percentage
         # rospy.loginfo("volt: {} current: {} remaining {}".format(volts, current, percent))
+
+    def DistGPS(self, gps0, gps1, alt0 , alt1):
+        e0, n0, _, _ = utm.from_latlon(*gps0)
+        e1, n1, _, _ = utm.from_latlon(*gps1)
+        return np.linalg.norm([e0 - e1, n0 - n1, alt0 - alt1])
 
 
 def main():

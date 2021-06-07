@@ -251,7 +251,7 @@ name = str(step)
 rotate = -90
 
 grid = Grid(gps0, gps1, gps2, gps3, takeoffPoint, step)
-# grid.validatePixelstoMeters()
+grid.validatePixelstoMeters()
 # ---- Get The Map ----
 area_maps = get_all_area_maps("./test_maps/")   # all area maps in the folder
 area_map = area_maps[0]

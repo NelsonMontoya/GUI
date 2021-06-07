@@ -1,7 +1,9 @@
-from shapely.geometry import Polygon
+from math import ceil
+from numpy.lib.function_base import delete
+from shapely.geometry import Polygon, Point
 import numpy as np
 import utm
-# import networkx as nx
+import networkx as nx
 import csv
 # import PIL
 from PIL import Image
@@ -22,24 +24,35 @@ class Grid(object):
         self.timeOfFly = 0
         self.distanceOfFly = 0
         self.velocityOfFly = vel   # m/s
+        self.xPixels = 0
+        self.yPixels = 0
         self.GPSData = np.array([gps0, gps1, gps2, gps3])
         self.UTMData = [utm.from_latlon(cords[0], cords[1]) for cords in self.GPSData]
         self.UTMCoords = np.array([[data[0], data[1]] for data in self.UTMData])
         # store coordinate information
         self.UTMZone = self.UTMData[0][2:]
         self.poly = Polygon(self.UTMCoords)
-        self.x_in_meters = self.DistGPS(self.gps0, self.gps1)
-        self.y_in_meters = self.DistGPS(self.gps0, self.gps2)
+        self.x_in_meters = self.DistGPS(self.gps0, self.gps1, self.alt0, self.alt1)
+        self.y_in_meters = self.DistGPS(self.gps0, self.gps3, self.alt0, self.alt1)
+        self.gridUTMCoords = []
+
+
+
+
+
 
     def validatePixelstoMeters(self):
-        n = int(self.x_in_meters/self.step)
-        p = int(self.y_in_meters/self.step)
-        print(n, p)
+        self.xPixels = ceil(self.x_in_meters/self.step)
+        self.yPixels = ceil(self.y_in_meters/self.step)
+        print('se cambio el tamaño de la imagen a {0}x{1}'.format(self.xPixels, self.yPixels))
         image = Image.open("./CoveragePathPlanning/fotos/mascara.png")
         # image.show()
-        new_image = image.resize((n, p))
+        new_image = image.resize((self.xPixels, self.yPixels))
         # new_image.show()
         new_image.save("./CoveragePathPlanning/test_maps/mascara.png")
+
+
+
 
 
     @staticmethod
@@ -50,31 +63,60 @@ class Grid(object):
         return np.array([[c, -s],
                          [s, c]])
 
-    def rotateGrid(self):
-        self.R = self.rot2D(np.radians(self.theta))
+    def rotateGrid(self, theta):
+        self.R = self.rot2D(np.radians(theta))
         cordsRotated = (self.R @ self.UTMCoords.T).T
         return Polygon(cordsRotated)
 
-    def DistGPS(self, gps0, gps1):
+    def DistGPS(self, gps0, gps1, alt0 , alt1):
         e0, n0, _, _ = utm.from_latlon(*gps0)
         e1, n1, _, _ = utm.from_latlon(*gps1)
-        return np.linalg.norm([e0 - e1, n0 - n1, self.alt0 - self.alt1])
+        return np.linalg.norm([e0 - e1, n0 - n1, alt0 - alt1])
 
-    def buildGrid(self, x_pixels, y_pixels):
 
-        # rotate cords
-        # rotatedPoly = self.rotateGrid()
-        self.xPixels = x_pixels
-        self.yPixels = y_pixels
-        # minx, miny, maxx, maxy = rotatedPoly.bounds
+    def assignCoords(self, areaMap):
         minx, miny, maxx, maxy = self.poly.bounds
-        self.xResol = float(self.x_in_meters / self.xPixels)
-        self.yResol = float(self.y_in_meters / self.yPixels)
-
-        self.xWorld = np.arange(minx, maxx, self.xResol)
-        self.yWorld = np.arange(miny, maxy, self.yResol)
+        self.yWorld = np.arange(miny, maxy, self.step)
+        self.xWorld = np.arange(minx, maxx, self.step)
         self.nX = len(self.xWorld)
         self.nY = len(self.yWorld)
+
+        height,width = areaMap.shape
+        self.graph = nx.grid_graph(dim=[width, height])
+        for i in range(0,height,1):
+            for j in range(0,width,1):
+                self.graph.nodes[(i, j)]['Values'] = areaMap[i][j]
+                self.graph.nodes[(i, j)]['UTM'] = np.array([self.xWorld[j], self.yWorld[height-i-1]])
+
+
+
+    def buildGrid(self,coveragePath,originalPath):
+
+        # rotate cords
+        # rotatedPoly = self.rotateGrid(self.theta)
+        #self.xPixels = x_pixels
+        #self.yPixels = y_pixels
+        #minx = self.UTMCoords[0][0]
+        #maxx = self.UTMCoords[1][0]
+        #miny = self.UTMCoords[3][1]
+        # maxy = self.UTMCoords[0][1]
+        # minx, miny, maxx, maxy = rotatedPoly.bounds
+        #minx, miny, maxx, maxy = self.poly.bounds
+        #self.xResol = float(self.x_in_meters / self.xPixels)
+        #self.yResol = float(self.y_in_meters / self.yPixels)
+
+        #self.yWorld = np.arange(miny, maxy, self.step)
+        #self.xWorld = np.arange(minx, maxx, self.step)
+        #self.nX = len(self.xWorld)
+        #self.nY = len(self.yWorld)
+      
+        
+
+        path_rotated, self.curvePoints = self.steamlinePath(coveragePath)
+        path_original, self.curvePoints = self.steamlinePath(originalPath)
+        print(f"la ruta rotada tiene {len(path_rotated)} puntos")
+        print(f"la ruta original tiene {len(path_original)} puntos")
+        return path_rotated, path_original
 
 
 
@@ -84,20 +126,25 @@ class Grid(object):
         # cords = np.array(self.pathBCD)
         # cordsRotated = (self.R @ cords.T).T
         # self.pathBCD = cordsRotated
+        print(f"la ruta tiene {len(self.pathBCD)}")
+        # self.GPSCoordsBCD = self.rotateGrid(90)
         self.UTM2GPS(self.UTMZone)
         i = len(self.GPSCoordsBCD)
+        
         self.generateRoute(name, self.GPSCoordsBCD)
 
 
 
 
     def calculateRouteUTM(self, coveragePath):
-        path, self.curvePoints = self.steamlinePath(coveragePath)
+        # path, self.curvePoints = self.steamlinePath(coveragePath)
         # lenPath = len(path)
         dataPath = []
-        for node in path:
-            dataPath.append([self.xWorld[node[0]], self.yWorld[node[1]]])
-            # dataPath.append(self.R.T @ np.array([self.xWorld[node[0]], self.yWorld[node[1]]]))
+        for node in coveragePath:
+            # newNode = (node[1],self.nX-node[0])
+            dataPath.append(self.graph.nodes[node]['UTM'])
+            #dataPath.append([self.xWorld[node[0]], self.yWorld[node[1]]])
+        
         return dataPath
 
     """def generatePathGPS(self):
@@ -116,15 +163,15 @@ class Grid(object):
 
 
     def calculateStatistics(self):
-        self.distanceOfFly = self.DistGPS(self.takeOffPoint, self.GPSCoordsBCD[0])
+        self.distanceOfFly = self.DistGPS(self.takeOffPoint, self.GPSCoordsBCD[0], self.alt0, self.alt1)
         self.timeOfFly = self.distanceOfFly/self.velocityOfFly
 
         for actual_p, next_p in zip(self.GPSCoordsBCD, self.GPSCoordsBCD[1:]):
-            distance = self.DistGPS(actual_p[0:2], next_p[0:2])
+            distance = self.DistGPS(actual_p[0:2], next_p[0:2], self.alt0, self.alt1)
             self.distanceOfFly += distance
             self.timeOfFly += distance/self.velocityOfFly
 
-        distance = self.DistGPS(self.takeOffPoint, self.GPSCoordsBCD[len(self.GPSCoordsBCD)-1])
+        distance = self.DistGPS(self.takeOffPoint, self.GPSCoordsBCD[len(self.GPSCoordsBCD)-1], self.alt0, self.alt1)
         self.distanceOfFly += distance
         self.timeOfFly += distance / self.velocityOfFly
 
@@ -143,6 +190,7 @@ class Grid(object):
             for wp in range(i):
                 writer_.writerow(GPSCoordinates[wp])
             writer_.writerow(self.takeOffPoint)
+        del writer_
 
         # Route generated ready to use in the ROS node to simulate the CPP using QGround
         with open(name, 'w', newline='') as csvfile:
@@ -159,6 +207,7 @@ class Grid(object):
 
             init = [i+2, 0, 3, 21, 0.0, 0.0, 0.0, 'nan', self.takeOffPoint[0], self.takeOffPoint[1], 0.0, 1]
             writer.writerow(init)
+        del writer
 
     @staticmethod
     def steamlinePath(coveragePath):

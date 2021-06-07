@@ -27,6 +27,7 @@ class gui(QMainWindow):
         self.teoricDistanceOfFly = 0.0
         self.redundancyCalculated = 0.0
         self.coverageCalculated = 0.0
+        self.distanceBetweenLines = 0.0
         self.PX4modes = px4AutoFlight()
         timer = QTimer(self)
         timer.timeout.connect(self.displayTime)
@@ -34,6 +35,7 @@ class gui(QMainWindow):
         timer.start(1)
         self.ui.sliderVelocidad.valueChanged.connect(self.updateDial)
         self.ui.sliderAltura.valueChanged.connect(self.updateALtura)
+        self.ui.sliderAnchoLineas.valueChanged.connect(self.updateAncho)
         self.ui.pushButtonSimulacion.clicked.connect(self.startFlight)
         self.ui.btn_CalcularRuta.clicked.connect(self.calcRoutes)
         self.ui.radioButtonBCD.toggled.connect(self.onClicked)
@@ -71,6 +73,10 @@ class gui(QMainWindow):
         self.alt_goal = self.ui.sliderAltura.value()
         self.ui.lcdAlturaTeorica.display(self.alt_goal)
         print(self.alt_goal)
+    
+    def updateAncho(self):
+        self.distanceBetweenLines = self.ui.sliderAnchoLineas.value()
+        self.ui.lcdAnchoLineas.display(self.distanceBetweenLines)
 
     def startFlight(self):
 
@@ -86,7 +92,7 @@ class gui(QMainWindow):
     
             
     def calcRoutes(self):
-        coords = calculateFromCoords(self.selected_algorith, self.velo_goal, self.alt_goal)
+        coords = calculateFromCoords(self.selected_algorith, self.velo_goal, self.alt_goal, self.distanceBetweenLines)
         coords.readArchiveAndCalculateRoute('coords.csv')
         self.coverageCalculated = coords.coveragePathPercentage
         self.redundancyCalculated = coords.coveragePathRedundancy
