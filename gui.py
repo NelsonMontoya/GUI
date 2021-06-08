@@ -12,8 +12,6 @@ from readCoords import calculateFromCoords
 
 
 
-
-
 class gui(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -44,17 +42,18 @@ class gui(QMainWindow):
 
         
     def displayTime(self):
-        self.ui.lcdVelocityDrone.display(self.PX4modes.velocidad_drone)
-        self.ui.lcdDistanciaDrone.display(self.PX4modes.distancia_viaje_drone)
-        self.ui.lcdAltitudeDrone.display(self.PX4modes.altura_drone)
-        self.ui.lcdTimeOfFly.display(self.PX4modes.tiempo_vuelo_drone)
-        self.ui.lcdWaypoint.display(self.PX4modes.wp_actual)
+        self.ui.velocidadDrone.setText("{:.2f}".format(self.PX4modes.velocidad_drone))
+        self.ui.distanciaRecorridaDrone.setText("{:.2f}".format(self.PX4modes.distancia_viaje_drone))
+        self.ui.AltitudeDrone.setText("{:.2f}".format(self.PX4modes.altura_drone))
+        self.ui.TimeOfFlyDrone.setText(str(int(self.PX4modes.tiempo_vuelo_drone)))
+        self.ui.currentWayPoint.setText(str(self.PX4modes.wp_actual))
 
     def updateStatusDrone(self):
 
         if self.PX4modes.extended_state == 2:
             self.ui.pushButtonSimulacion.setEnabled(False)
             self.ui.lbStatus.setText('In the Air')
+            # self.ui.lbStatus.setStyleSheet()
         elif self.PX4modes.extended_state == 1:
             self.ui.pushButtonSimulacion.setEnabled(True)
             self.ui.lbStatus.setText('On the Groud')
@@ -65,21 +64,23 @@ class gui(QMainWindow):
 
     def updateDial(self):
         self.velo_goal = self.ui.sliderVelocidad.value()
-        floatNUmer = float(self.velo_goal/10)
-        self.ui.lcdNumber.display(floatNUmer)
-        self.velo_goal= floatNUmer
+        self.velo_goal = float(self.velo_goal/10)
+        self.ui.velocidadParametro.setText(str(self.velo_goal))
+        #self.ui.lcdNumber.display(floatNUmer)
+        # self.velo_goal= floatNUmer
     
     def updateALtura(self, event):
         self.alt_goal = self.ui.sliderAltura.value()
-        self.ui.lcdAlturaTeorica.display(self.alt_goal)
+        self.ui.AlturaParametro.setText(str(self.alt_goal))
         print(self.alt_goal)
     
     def updateAncho(self):
         self.distanceBetweenLines = self.ui.sliderAnchoLineas.value()
-        self.ui.lcdAnchoLineas.display(self.distanceBetweenLines)
+        self.ui.anchoLineasParametro.setText(str(self.distanceBetweenLines))
+        
+
 
     def startFlight(self):
-
         self.PX4modes.__init__(self.velo_goal, self.alt_goal)
         self.failsafe_status = self.PX4modes.read_failsafe()
         if (self.failsafe_status['DL'] != 0) or (self.failsafe_status['RC'] != 0):   
@@ -92,6 +93,7 @@ class gui(QMainWindow):
     
             
     def calcRoutes(self):
+        # if self.velo_goal > 0 and self.alt_goal >0 and self.distanceBetweenLines>0:
         coords = calculateFromCoords(self.selected_algorith, self.velo_goal, self.alt_goal, self.distanceBetweenLines)
         coords.readArchiveAndCalculateRoute('coords.csv')
         self.coverageCalculated = coords.coveragePathPercentage
@@ -101,16 +103,15 @@ class gui(QMainWindow):
         self.displayValues()
 
     def displayValues(self):
-        self.ui.lcdDistanciaTeorica.display(self.teoricDistanceOfFly)
-        self.ui.lcdTiempoTeorico.display(self.teoricTimeOfFly)
-        self.ui.lcdRedundancia.display(self.redundancyCalculated*100)
-        self.ui.lcdCobertura.display(self.coverageCalculated*100)
+        self.ui.distanciaTeorica.setText("{:.2f}".format(self.teoricDistanceOfFly))
+        self.ui.tiempoTeorico.setText("{:.2f}".format(self.teoricTimeOfFly))
+        self.ui.redundancia.setText("{:.2f}".format(self.redundancyCalculated*100))
+        self.ui.cobertura.setText("{:.2f}".format(self.coverageCalculated*100))
 
     def onClicked(self):
         btn = self.sender()
         if btn.isChecked():
             self.selected_algorith = btn.text()
-            # print(self.selected_algorith)
 
 
 

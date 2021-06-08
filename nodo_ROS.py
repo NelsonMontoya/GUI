@@ -17,14 +17,14 @@ from geometry_msgs.msg import TwistStamped
 mavros.set_namespace()
 
 class px4AutoFlight:
-    def __init__(self, velocity=5, altitud = 5, tiempoVuelo = 0, drone_in_the_air = False):
-        self.drone_in_the_air = drone_in_the_air
+    def __init__(self, velocity=5, altitud = 5):
+        # self.drone_in_the_air = drone_in_the_air
         self.goal_altitude = altitud
         self.altura_drone = 0.0
         self.velocity = velocity
         self.wl = []
         self.velocidad_drone = 0.0
-        self.tiempo_vuelo_drone = tiempoVuelo
+        self.tiempo_vuelo_drone = 0.0
         self.gpsOne = (0, 0)
         self.gpsTwo = (0, 0)
         self.distancia_viaje_drone = 0.0
@@ -32,7 +32,7 @@ class px4AutoFlight:
         # self.extended_state = ExtendedState()
         self.extended_state = 0
         self.start_time = time()
-        self.end_time = 0.0
+        self.end_time = self.start_time
         self.timeOne = 0.0
         self.timeTwo = 0.0
         self.start_measure = False
@@ -297,6 +297,9 @@ class px4AutoFlight:
         # when the UAV is on the ground
         elif self.extended_state == 1:
             self.tiempo_vuelo_drone = self.end_time -self.start_time
+        
+        else:
+            self.tiempo_vuelo_drone = 0.0
 
         #rospy.loginfo("Tiempo de Vuelo: {0:.2f}".format(self.tiempo_vuelo_drone))
         #rospy.loginfo("Distancia Recorrida: {0:.2f}".format(self.distancia_viaje_drone))
