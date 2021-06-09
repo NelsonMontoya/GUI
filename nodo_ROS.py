@@ -17,7 +17,7 @@ from geometry_msgs.msg import TwistStamped
 mavros.set_namespace()
 
 class px4AutoFlight:
-    def __init__(self, velocity=5, altitud = 5):
+    def __init__(self, velocity=5, altitud = 5,latitud=0,longitud=0):
         # self.drone_in_the_air = drone_in_the_air
         self.goal_altitude = altitud
         self.altura_drone = 0.0
@@ -262,13 +262,14 @@ class px4AutoFlight:
         #rospy.loginfo("Latitud: {} Longitud: {}".format(latitud, longitud)) 
 
     def gps_vel_callback(self, msg):
-
+        
         vel_x = msg.twist.linear.x
         vel_y = msg.twist.linear.y
-        if (abs(vel_x) > (abs(vel_y))): 
+        """if (abs(vel_x) > (abs(vel_y))): 
             self.velocidad_drone = abs(vel_x)
         else:
-            self.velocidad_drone = abs(vel_y)
+            self.velocidad_drone = abs(vel_y)"""
+        self.velocidad_drone = math.sqrt((vel_x)**2 + (vel_y)**2)
 
         # when taking off
         if self.extended_state == 3:
@@ -282,7 +283,6 @@ class px4AutoFlight:
         # when reached the goal altitude
         elif self.extended_state == 2:
             # self.timeOne = msg.header.stamp.secs
-            # self.velocidad_drone = math.sqrt((vel_x)**2 + (vel_y)**2)
             self.tiempo_vuelo_drone = time()-self.start_time
             self.distancia_viaje_drone+= self.DistGPS(self.gpsOne, self.gpsTwo,self.altura_drone, self.altura_drone)
             self.gpsTwo = self.gpsOne
@@ -292,8 +292,6 @@ class px4AutoFlight:
         elif self.extended_state == 4:
             self.end_time = time()
             self.tiempo_vuelo_drone = self.end_time -self.start_time
-            self.timeOne = msg.header.stamp.secs
-            self.timeTwo = self.timeOne
         # when the UAV is on the ground
         elif self.extended_state == 1:
             self.tiempo_vuelo_drone = self.end_time -self.start_time

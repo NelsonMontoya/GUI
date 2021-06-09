@@ -20,17 +20,21 @@ class gui(QMainWindow):
         self.ui.setupUi(self)
         self.velo_goal = 0.0
         self.alt_goal = 0.0
+        self.PX4modes = px4AutoFlight(self.velo_goal, self.alt_goal,)
         self.selected_algorith = 'BCD'
         self.teoricTimeOfFly = 0.0
         self.teoricDistanceOfFly = 0.0
         self.redundancyCalculated = 0.0
         self.coverageCalculated = 0.0
         self.distanceBetweenLines = 0.0
-        self.PX4modes = px4AutoFlight()
+        self.minutos = 0.0
+        self.horas = 0.0
+        self.segundos = 0.0
+        
         timer = QTimer(self)
         timer.timeout.connect(self.displayTime)
         timer.timeout.connect(self.updateStatusDrone)
-        timer.start(1)
+        timer.start(200)
         self.ui.sliderVelocidad.valueChanged.connect(self.updateDial)
         self.ui.sliderAltura.valueChanged.connect(self.updateALtura)
         self.ui.sliderAnchoLineas.valueChanged.connect(self.updateAncho)
@@ -42,10 +46,13 @@ class gui(QMainWindow):
 
         
     def displayTime(self):
-        self.ui.velocidadDrone.setText("{:.2f}".format(self.PX4modes.velocidad_drone))
-        self.ui.distanciaRecorridaDrone.setText("{:.2f}".format(self.PX4modes.distancia_viaje_drone))
-        self.ui.AltitudeDrone.setText("{:.2f}".format(self.PX4modes.altura_drone))
-        self.ui.TimeOfFlyDrone.setText(str(int(self.PX4modes.tiempo_vuelo_drone)))
+        horas, minutos, segundos = self.changeToHours(self.PX4modes.tiempo_vuelo_drone)
+        #tiempo = str(int(horas))+':'+str(int(minutos))+':'+str(int(segundos))
+        #print(tiempo)
+        self.ui.velocidadDrone.setText("{:.1f}".format(self.PX4modes.velocidad_drone))
+        self.ui.distanciaRecorridaDrone.setText("{:.1f}".format(self.PX4modes.distancia_viaje_drone))
+        self.ui.AltitudeDrone.setText("{:.1f}".format(self.PX4modes.altura_drone))
+        self.ui.TimeOfFlyDrone.setText(f"{horas}:{minutos}:{segundos}")
         self.ui.currentWayPoint.setText(str(self.PX4modes.wp_actual))
 
     def updateStatusDrone(self):
@@ -104,9 +111,25 @@ class gui(QMainWindow):
 
     def displayValues(self):
         self.ui.distanciaTeorica.setText("{:.2f}".format(self.teoricDistanceOfFly))
-        self.ui.tiempoTeorico.setText("{:.2f}".format(self.teoricTimeOfFly))
+        horas, minutos, segundos = self.changeToHours(self.teoricTimeOfFly)
+        self.ui.tiempoTeorico.setText(horas+":"+minutos+":"+segundos)
         self.ui.redundancia.setText("{:.2f}".format(self.redundancyCalculated*100))
         self.ui.cobertura.setText("{:.2f}".format(self.coverageCalculated*100))
+
+    def changeToHours(self, time):
+        resto = time%3600
+        minutos = int(resto/60)
+        horas = int(time/3600)
+        segundos = int(resto%60)
+        return self.fillZeros(horas),self.fillZeros(minutos),self.fillZeros(segundos)
+
+    def fillZeros(self, value):
+        if value <10:
+            return str(value).zfill(2)
+        else:
+            return str(value)
+
+
 
     def onClicked(self):
         btn = self.sender()
