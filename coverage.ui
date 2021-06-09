@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>884</width>
-    <height>609</height>
+    <width>910</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,6 +64,18 @@ border-radius: 15px</string>
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
                <widget class="QLabel" name="label_title">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>30</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>30</height>
+                 </size>
+                </property>
                 <property name="font">
                  <font>
                   <family>Uroob</family>
@@ -74,7 +86,10 @@ border-radius: 15px</string>
                  <string notr="true">color: rgb(255, 255, 255);</string>
                 </property>
                 <property name="text">
-                 <string>Parámetros y Cálculos Teóricos</string>
+                 <string>Datos Simulación</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -113,7 +128,7 @@ QFrame:hover{
                    </property>
                    <layout class="QHBoxLayout" name="horizontalLayout_9">
                     <item>
-                     <widget class="QFrame" name="frame_velocidad_simulacion_4">
+                     <widget class="QFrame" name="frame_status_simulacion">
                       <property name="minimumSize">
                        <size>
                         <width>120</width>
@@ -792,7 +807,8 @@ QFrame:hover{
                           </font>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">border:none;</string>
+                          <string notr="true">border:none;
+color: rgb(255, 255, 255);</string>
                          </property>
                          <property name="text">
                           <string>Algoritmos Disponibles</string>
@@ -823,10 +839,13 @@ QFrame:hover{
                           <enum>Qt::LeftToRight</enum>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(252, 175, 62);</string>
+                          <string notr="true">color: rgb(186, 189, 182);</string>
                          </property>
                          <property name="text">
                           <string>BCD</string>
+                         </property>
+                         <property name="checked">
+                          <bool>true</bool>
                          </property>
                         </widget>
                        </item>
@@ -848,7 +867,7 @@ QFrame:hover{
                           <enum>Qt::LeftToRight</enum>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(252, 175, 62);</string>
+                          <string notr="true">color: rgb(186, 189, 182);</string>
                          </property>
                          <property name="text">
                           <string>STC</string>
@@ -873,7 +892,7 @@ QFrame:hover{
                           <enum>Qt::LeftToRight</enum>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">color: rgb(252, 175, 62);</string>
+                          <string notr="true">color: rgb(186, 189, 182);</string>
                          </property>
                          <property name="text">
                           <string>Wavefront</string>
@@ -892,7 +911,7 @@ QFrame:hover{
                     <string notr="true">QFrame{
 	border: 5px solid rgb(255, 255, 255);
 	border-radius: 15px;
-	color: rgb(252, 175, 62);
+	color: rgb(186, 189, 182);
 }
 QFrame:hover{
   border: 5px solid #f9aa33;
@@ -905,6 +924,32 @@ QFrame:hover{
                     <enum>QFrame::Raised</enum>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_6">
+                    <item>
+                     <widget class="QLabel" name="label_Datos_teoricos">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <family>Uroob</family>
+                        <pointsize>18</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">border:none;
+color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>Datos Teoricos </string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <widget class="QFrame" name="frame_6">
                       <property name="styleSheet">
@@ -937,6 +982,9 @@ QFrame:hover{
                            <family>Uroob</family>
                            <pointsize>18</pointsize>
                           </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(252, 175, 62);</string>
                          </property>
                          <property name="text">
                           <string> 0</string>
@@ -1004,6 +1052,9 @@ QFrame:hover{
                          <property name="layoutDirection">
                           <enum>Qt::LeftToRight</enum>
                          </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(252, 175, 62);</string>
+                         </property>
                          <property name="text">
                           <string>0</string>
                          </property>
@@ -1024,10 +1075,10 @@ QFrame:hover{
                           <enum>Qt::RightToLeft</enum>
                          </property>
                          <property name="text">
-                          <string>m</string>
+                          <string> m</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignCenter</set>
+                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                          </property>
                         </widget>
                        </item>
@@ -1072,6 +1123,9 @@ QFrame:hover{
                            <family>Uroob</family>
                            <pointsize>18</pointsize>
                           </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(252, 175, 62);</string>
                          </property>
                          <property name="text">
                           <string>0</string>
@@ -1130,6 +1184,9 @@ QFrame:hover{
                            <pointsize>18</pointsize>
                           </font>
                          </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(252, 175, 62);</string>
+                         </property>
                          <property name="text">
                           <string> 0</string>
                          </property>
@@ -1182,7 +1239,7 @@ QFrame:hover{
                     <property name="geometry">
                      <rect>
                       <x>20</x>
-                      <y>20</y>
+                      <y>180</y>
                       <width>233</width>
                       <height>43</height>
                      </rect>
@@ -1197,6 +1254,16 @@ QFrame:hover{
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_10">
+                     <item>
+                      <widget class="QSlider" name="sliderAltura">
+                       <property name="styleSheet">
+                        <string notr="true">color: #f9aa33;</string>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
                      <item>
                       <widget class="QLabel" name="labelAltura">
                        <property name="sizePolicy">
@@ -1219,20 +1286,10 @@ QFrame:hover{
 color: rgb(211, 215, 207);</string>
                        </property>
                        <property name="text">
-                        <string>Altura      </string>
+                        <string>     Altura</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSlider" name="sliderAltura">
-                       <property name="styleSheet">
-                        <string notr="true">color: #f9aa33;</string>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
                        </property>
                       </widget>
                      </item>
@@ -1288,7 +1345,7 @@ color: rgb(186, 189, 182);</string>
                     <property name="geometry">
                      <rect>
                       <x>20</x>
-                      <y>70</y>
+                      <y>80</y>
                       <width>233</width>
                       <height>43</height>
                      </rect>
@@ -1304,6 +1361,16 @@ color: rgb(186, 189, 182);</string>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_11">
                      <item>
+                      <widget class="QSlider" name="sliderVelocidad">
+                       <property name="styleSheet">
+                        <string notr="true">color: #f9aa33;</string>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
                       <widget class="QLabel" name="label_VelocidadDeseada">
                        <property name="font">
                         <font>
@@ -1316,20 +1383,10 @@ color: rgb(186, 189, 182);</string>
 color: rgb(186, 189, 182);</string>
                        </property>
                        <property name="text">
-                        <string>Velocidad  </string>
+                        <string>  Velocidad</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSlider" name="sliderVelocidad">
-                       <property name="styleSheet">
-                        <string notr="true">color: #f9aa33;</string>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
                        </property>
                       </widget>
                      </item>
@@ -1385,7 +1442,7 @@ color: rgb(186, 189, 182);</string>
                     <property name="geometry">
                      <rect>
                       <x>20</x>
-                      <y>110</y>
+                      <y>130</y>
                       <width>233</width>
                       <height>43</height>
                      </rect>
@@ -1401,6 +1458,16 @@ color: rgb(186, 189, 182);</string>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_12">
                      <item>
+                      <widget class="QSlider" name="sliderAnchoLineas">
+                       <property name="styleSheet">
+                        <string notr="true">color: #f9aa33;</string>
+                       </property>
+                       <property name="orientation">
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
                       <widget class="QLabel" name="label_ancho">
                        <property name="font">
                         <font>
@@ -1413,20 +1480,10 @@ color: rgb(186, 189, 182);</string>
 color: rgb(186, 189, 182);</string>
                        </property>
                        <property name="text">
-                        <string>Ancho      </string>
+                        <string>      Ancho</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QSlider" name="sliderAnchoLineas">
-                       <property name="styleSheet">
-                        <string notr="true">color: #f9aa33;</string>
-                       </property>
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
                        </property>
                       </widget>
                      </item>
@@ -1470,6 +1527,47 @@ color: rgb(186, 189, 182);</string>
                        </property>
                        <property name="text">
                         <string>m</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QFrame" name="frame_16">
+                    <property name="geometry">
+                     <rect>
+                      <x>10</x>
+                      <y>20</y>
+                      <width>233</width>
+                      <height>43</height>
+                     </rect>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">border:none;</string>
+                    </property>
+                    <property name="frameShape">
+                     <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="frameShadow">
+                     <enum>QFrame::Raised</enum>
+                    </property>
+                    <layout class="QHBoxLayout" name="horizontalLayout_14">
+                     <item>
+                      <widget class="QLabel" name="label_altura_unidades_2">
+                       <property name="font">
+                        <font>
+                         <family>Uroob</family>
+                         <pointsize>18</pointsize>
+                        </font>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">border:none;
+color: rgb(255, 255, 255);</string>
+                       </property>
+                       <property name="text">
+                        <string>Parámetos CPP</string>
                        </property>
                        <property name="alignment">
                         <set>Qt::AlignCenter</set>
@@ -1579,7 +1677,7 @@ QPushButton:hover{
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>884</width>
+     <width>910</width>
      <height>22</height>
     </rect>
    </property>

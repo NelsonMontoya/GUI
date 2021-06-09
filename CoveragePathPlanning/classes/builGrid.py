@@ -83,14 +83,14 @@ class Grid(object):
 
         height,width = areaMap.shape
         self.graph = nx.grid_graph(dim=[width, height])
-        for i in range(0,height,1):
-            for j in range(0,width,1):
+        for i in range(height):
+            for j in range(width):
                 self.graph.nodes[(i, j)]['Values'] = areaMap[i][j]
                 self.graph.nodes[(i, j)]['UTM'] = np.array([self.xWorld[j], self.yWorld[height-i-1]])
 
 
 
-    def buildGrid(self,coveragePath,originalPath):
+    #def buildGrid(self,coveragePath,originalPath):
 
         # rotate cords
         # rotatedPoly = self.rotateGrid(self.theta)
@@ -112,47 +112,29 @@ class Grid(object):
       
         
 
-        path_rotated, self.curvePoints = self.steamlinePath(coveragePath)
-        path_original, self.curvePoints = self.steamlinePath(originalPath)
-        print(f"la ruta rotada tiene {len(path_rotated)} puntos")
-        print(f"la ruta original tiene {len(path_original)} puntos")
-        return path_rotated, path_original
+       # path_rotated, self.curvePoints = self.steamlinePath(coveragePath)
+        #path_original, self.curvePoints = self.steamlinePath(originalPath)
+        #print(f"la ruta rotada tiene {len(path_rotated)} puntos")
+        #print(f"la ruta original tiene {len(path_original)} puntos")
+        #return path_rotated, path_original
 
 
 
     def assignDataGrid(self, coveragePath, name):
         self.pathBCD = self.calculateRouteUTM(coveragePath)
-        # self.R = self.rot2D(np.radians(self.theta))
-        # cords = np.array(self.pathBCD)
-        # cordsRotated = (self.R @ cords.T).T
-        # self.pathBCD = cordsRotated
-        print(f"la ruta tiene {len(self.pathBCD)}")
-        # self.GPSCoordsBCD = self.rotateGrid(90)
         self.UTM2GPS(self.UTMZone)
-        i = len(self.GPSCoordsBCD)
-        
         self.generateRoute(name, self.GPSCoordsBCD)
 
 
 
 
     def calculateRouteUTM(self, coveragePath):
-        # path, self.curvePoints = self.steamlinePath(coveragePath)
+        path, self.curvePoints = self.steamlinePath(coveragePath)
         # lenPath = len(path)
         dataPath = []
-        for node in coveragePath:
-            # newNode = (node[1],self.nX-node[0])
+        for node in path:
             dataPath.append(self.graph.nodes[node]['UTM'])
-            #dataPath.append([self.xWorld[node[0]], self.yWorld[node[1]]])
-        
         return dataPath
-
-    """def generatePathGPS(self):
-            self.pathGPSBCD = []
-            self.pathGPSBCD.append(self.UTM2GPS(self.UTMZone)) """
-
-
-
 
 
     def UTM2GPS(self, zone):

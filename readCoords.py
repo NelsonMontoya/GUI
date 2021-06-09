@@ -12,7 +12,7 @@ from CoveragePathPlanning.cpp_algorithms.stc import stc
 from CoveragePathPlanning.cpp_algorithms.metrics import coverage_metrics, printer
 
 class calculateFromCoords():
-    def __init__(self, route = 'Wavefront', velocidad = 5, altura = 5, anchoLineas = 15):
+    def __init__(self, route = 'Wavefront', velocidad = 5, altura = 5, anchoLineas = 5):
         self.gpsCoordinates = []
         self.file ='coords.csv' 
         self.typeOfRoute = route
@@ -95,20 +95,11 @@ class calculateFromCoords():
 
 
         
-        print((f"La ruta tiene {len(self.coverage_path)} puntos"))
-        # self.original_path = self.coverage_path
+        # print((f"La ruta tiene {len(self.coverage_path)} puntos"))
         self.rotatePolygonTo(-90, abs(area_map.shape[0] - area_map.shape[1]))
-        # print(self.pathRotated.shape)
-        # n1 = area_map.shape[0] + abs(area_map.shape[0]-area_map.shape[1])
-        # n2 = area_map.shape[0] + abs(area_map.shape[0]-area_map.shape[1])
-        # self.original_path = grid.buildGrid(area_map.shape[0], area_map.shape[1], self.pathRotated)
-        self.pathRotated,self.original_path = grid.buildGrid(self.pathRotated, self.coverage_path)
-        # self.rotatePolygonTo(90)
+        #self.pathRotated,self.original_path = grid.buildGrid(self.pathRotated, self.coverage_path)
 
-        # cm = coverage_metrics(area_map, self.coverage_path)
-        #self.coveragePathPercentage, self.coveragePathRedundancy = coverage_metrics(area_map, self.original_path)
-        # printer(self.cm)
-        grid.assignDataGrid(self.original_path, 'Route')
+        grid.assignDataGrid(self.coverage_path, 'Route')
         grid.calculateStatistics()
         self.distanceOfFly = grid.distanceOfFly
         self.timeOfFly = grid.timeOfFly 
@@ -144,15 +135,15 @@ class calculateFromCoords():
         print(tf_points[0][0], tf_points[0][1])
         tf_polygon = ndarray2polygon(tf_points)
 
-        ax, _ = make_axis()
-        plot_polygon(polygon, ax, color='blue')
-        plot_polygon(tf_polygon, ax, color='red')
-        ax.axvline(x=0, color='black')
-        ax.axhline(y=0, color='black')
-        zoom_extents(ax, [polygon, tf_polygon])
-        import pylab
+        #ax, _ = make_axis()
+        #plot_polygon(polygon, ax, color='blue')
+        plot_polygon(tf_polygon, color='red')
+        #ax.axvline(x=0, color='black')
+        #ax.axhline(y=0, color='black')
+        #zoom_extents(ax, [polygon, tf_polygon])
+        #import pylab
 
-        pylab.show()
+        #pylab.show()
 
     ##### Rotation Transformations #####
 class RotationTransform:
