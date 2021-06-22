@@ -38,6 +38,12 @@ class px4AutoFlight:
         self.start_measure = False
         self.wp_actual = 0
         self.landed_state_confirmed = False
+        self.voltage = 0
+        self.current = 0
+        self.battery_percentage = 0
+        self.coordsVisisted = []
+        self.repeatedCoordsVisited = 0
+        self.coverageRedundancy = 0
 
          # ROS services
         service_timeout = 30
@@ -256,20 +262,19 @@ class px4AutoFlight:
         #self.latitud_drone_next= msg.latitude
         # self.longitud_drone_next = msg.longitude
         self.gpsOne = (msg.latitude, msg.longitude)
-        
-    
+                
         #self.global_position_longitude = data.header.status.longitude
         #rospy.loginfo("Latitud: {} Longitud: {}".format(latitud, longitud)) 
 
     def gps_vel_callback(self, msg):
         
-        vel_x = msg.twist.linear.x
-        vel_y = msg.twist.linear.y
+        #vel_x = msg.twist.linear.x
+        #vel_y = msg.twist.linear.y
         """if (abs(vel_x) > (abs(vel_y))): 
             self.velocidad_drone = abs(vel_x)
         else:
             self.velocidad_drone = abs(vel_y)"""
-        self.velocidad_drone = math.sqrt((vel_x)**2 + (vel_y)**2)
+        self.velocidad_drone = math.sqrt((msg.twist.linear.x)**2 + (msg.twist.linear.y)**2)
 
         # when taking off
         if self.extended_state == 3:
@@ -305,10 +310,10 @@ class px4AutoFlight:
 
             
     def batery_status_callback(self, msg):
-        volts = msg.voltage
-        current = msg.current
-        percent = msg.percentage
-        # rospy.loginfo("volt: {} current: {} remaining {}".format(volts, current, percent))
+        self.voltage = msg.voltage
+        self.current = msg.current
+        self.battery_percentage = msg.percentage
+        #rospy.loginfo("volt: {} current: {} remaining {}".format(self.voltage, self.current, self.battery_percentage))
 
     def DistGPS(self, gps0, gps1, alt0 , alt1):
         e0, n0, _, _ = utm.from_latlon(*gps0)

@@ -1,11 +1,12 @@
 #!/usr/bin python3
 
 import sys
+import utm
 import rospy
+import threading
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from coverage import*
-from time import time
 from PyQt5 import*
 from nodo_ROS import px4AutoFlight
 from readCoords import calculateFromCoords
@@ -20,17 +21,21 @@ class gui(QMainWindow):
         self.ui.setupUi(self)
         self.velo_goal = 0.0
         self.alt_goal = 0.0
-        self.PX4modes = px4AutoFlight(self.velo_goal, self.alt_goal,)
+        self.showData = True
+        self.PX4modes = px4AutoFlight(self.velo_goal, self.alt_goal)
         self.selected_algorith = 'BCD'
         self.teoricTimeOfFly = 0.0
         self.teoricDistanceOfFly = 0.0
         self.redundancyCalculated = 0.0
+        self.redundancySimulation = 0.0
         self.coverageCalculated = 0.0
         self.distanceBetweenLines = 0.0
         self.minutos = 0.0
         self.horas = 0.0
         self.segundos = 0.0
-        
+
+        # self.calcRedundancy = threading.Thread(target=self.calculateMetrics)
+        # self.calCoverage = threading.Thread(target=self.calculateCoverage)
         timer = QTimer(self)
         timer.timeout.connect(self.displayTime)
         timer.timeout.connect(self.updateStatusDrone)
@@ -46,21 +51,23 @@ class gui(QMainWindow):
 
         
     def displayTime(self):
+       
         horas, minutos, segundos = self.changeToHours(self.PX4modes.tiempo_vuelo_drone)
-        #tiempo = str(int(horas))+':'+str(int(minutos))+':'+str(int(segundos))
-        #print(tiempo)
         self.ui.velocidadDrone.setText("{:.1f}".format(self.PX4modes.velocidad_drone))
         self.ui.distanciaRecorridaDrone.setText("{:.1f}".format(self.PX4modes.distancia_viaje_drone))
         self.ui.AltitudeDrone.setText("{:.1f}".format(self.PX4modes.altura_drone))
         self.ui.TimeOfFlyDrone.setText(f"{horas}:{minutos}:{segundos}")
         self.ui.currentWayPoint.setText(str(self.PX4modes.wp_actual))
+    
+
+    def calculateRedundancy(self):
+        pass
 
     def updateStatusDrone(self):
-
         if self.PX4modes.extended_state == 2:
             self.ui.pushButtonSimulacion.setEnabled(False)
             self.ui.lbStatus.setText('In the Air')
-            # self.ui.lbStatus.setStyleSheet()
+                # self.ui.lbStatus.setStyleSheet()
         elif self.PX4modes.extended_state == 1:
             self.ui.pushButtonSimulacion.setEnabled(True)
             self.ui.lbStatus.setText('On the Groud')
@@ -68,6 +75,9 @@ class gui(QMainWindow):
             self.ui.lbStatus.setText('Taking Off')
         elif self.PX4modes.extended_state == 4:
             self.ui.lbStatus.setText('Landing')
+     
+
+            
 
     def updateDial(self):
         self.velo_goal = self.ui.sliderVelocidad.value()
@@ -88,6 +98,7 @@ class gui(QMainWindow):
 
 
     def startFlight(self):
+        
         self.PX4modes.__init__(self.velo_goal, self.alt_goal)
         self.failsafe_status = self.PX4modes.read_failsafe()
         if (self.failsafe_status['DL'] != 0) or (self.failsafe_status['RC'] != 0):   
@@ -97,17 +108,52 @@ class gui(QMainWindow):
         self.PX4modes.loadMission()
         self.PX4modes.setAutoMissionMode()
         self.PX4modes.setArm()
+        #self.calcRedundancy.start()
+        # self.calculateCoverage()
+
     
             
     def calcRoutes(self):
         # if self.velo_goal > 0 and self.alt_goal >0 and self.distanceBetweenLines>0:
-        coords = calculateFromCoords(self.selected_algorith, self.velo_goal, self.alt_goal, self.distanceBetweenLines)
-        coords.readArchiveAndCalculateRoute('coords.csv')
-        self.coverageCalculated = coords.coveragePathPercentage
-        self.redundancyCalculated = coords.coveragePathRedundancy
-        self.teoricTimeOfFly = coords.timeOfFly
-        self.teoricDistanceOfFly=coords.distanceOfFly
+        self.coords = calculateFromCoords(self.selected_algorith, self.velo_goal, self.alt_goal, self.distanceBetweenLines)
+        self.coords.readArchiveAndCalculateRoute('coords.csv')
+        self.coverageCalculated = self.coords.coveragePathPercentage
+        self.redundancyCalculated = self.coords.coveragePathRedundancy
+        self.teoricTimeOfFly = self.coords.timeOfFly
+        self.teoricDistanceOfFly= self.coords.distanceOfFly
+        self.cantidad_giros = self.coords.cantidadCurvas
+        self.allCoordinates = self.coords.grid.graph
+        self.UTMZone = self.coords.grid.UTMZone
+        #for node in enumerate(self.allCoordinates.nodes):
+        #    print(self.allCoordinates.nodes[node[1]]['UTM'][0])
+        #    print(len(self.allCoordinates.nodes))
         self.displayValues()
+
+    def calculateMetrics(self):
+        calculate = True
+        while self.showData:
+        
+            for node in enumerate(self.allCoordinates.nodes):
+                
+                distancia = self.PX4modes.DistGPS(self.PX4modes.gpsOne,
+                                                    utm.to_latlon(*self.allCoordinates.nodes[node[1]]['UTM'], *self.UTMZone),
+                                                    self.alt_goal, 
+                                                    self.alt_goal)
+                if distancia <=0.1*self.distanceBetweenLines and calculate:
+                    print(distancia)
+                    calculate = False
+                elif distancia > 0.1*self.distanceBetweenLines and not calculate:
+                    calculate = True
+    
+
+    def calculateCoverage(self):
+        waypoints = self.PX4modes.wl
+        tamano = len(waypoints)
+
+     
+        
+        pass
+
 
     def displayValues(self):
         self.ui.distanciaTeorica.setText("{:.2f}".format(self.teoricDistanceOfFly))
@@ -115,13 +161,14 @@ class gui(QMainWindow):
         self.ui.tiempoTeorico.setText(horas+":"+minutos+":"+segundos)
         self.ui.redundancia.setText("{:.2f}".format(self.redundancyCalculated*100))
         self.ui.cobertura.setText("{:.2f}".format(self.coverageCalculated*100))
+        self.ui.label_cantidad_giros.setText(str(self.cantidad_giros))
 
     def changeToHours(self, time):
         resto = time%3600
         minutos = int(resto/60)
         horas = int(time/3600)
         segundos = int(resto%60)
-        return self.fillZeros(horas),self.fillZeros(minutos),self.fillZeros(segundos)
+        return self.fillZeros(horas),self.fillZeros(minutos), self.fillZeros(segundos)
 
     def fillZeros(self, value):
         if value <10:

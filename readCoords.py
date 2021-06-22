@@ -12,7 +12,7 @@ from CoveragePathPlanning.cpp_algorithms.stc import stc
 from CoveragePathPlanning.cpp_algorithms.metrics import coverage_metrics, printer
 
 class calculateFromCoords():
-    def __init__(self, route = 'Wavefront', velocidad = 5, altura = 5, anchoLineas = 5):
+    def __init__(self, route = 'BCD', velocidad = 5, altura = 5, anchoLineas = 5):
         self.gpsCoordinates = []
         self.file ='coords.csv' 
         self.typeOfRoute = route
@@ -31,6 +31,7 @@ class calculateFromCoords():
         self.pathRotated = []
         self.velocidad = velocidad
         self.altura = altura
+        self.cantidadCurvas = 0
         
         
 
@@ -57,7 +58,7 @@ class calculateFromCoords():
     
 
     def calculateGrid(self):
-        grid = Grid(self.velocidad, 
+        self.grid = Grid(self.velocidad, 
                     self.altura,
                     self.gps0, 
                     self.gps1, 
@@ -66,7 +67,7 @@ class calculateFromCoords():
                     self.takeoffPoint, 
                     self.anchoLineas)
         
-        grid.validatePixelstoMeters()
+        self.grid.validatePixelstoMeters()
         
         # ---- Get The Map ----
         area_maps = get_all_area_maps('./CoveragePathPlanning/test_maps/')
@@ -76,7 +77,7 @@ class calculateFromCoords():
         print(area_map.shape)
         print(area_map[0][0])
 
-        grid.assignCoords(area_map)
+        self.grid.assignCoords(area_map)
         
 
         # ---- Calculate Coverage Path ----
@@ -99,10 +100,11 @@ class calculateFromCoords():
         self.rotatePolygonTo(-90, abs(area_map.shape[0] - area_map.shape[1]))
         #self.pathRotated,self.original_path = grid.buildGrid(self.pathRotated, self.coverage_path)
 
-        grid.assignDataGrid(self.coverage_path, 'Route')
-        grid.calculateStatistics()
-        self.distanceOfFly = grid.distanceOfFly
-        self.timeOfFly = grid.timeOfFly 
+        self.grid.assignDataGrid(self.coverage_path, 'Route')
+        self.grid.calculateStatistics()
+        self.distanceOfFly = self.grid.distanceOfFly
+        self.timeOfFly = self.grid.timeOfFly
+        self.cantidadCurvas = len(self.grid.curvePoints)
 
 
     def recalculatePath(self):

@@ -124,7 +124,7 @@ def get_end_coords(area_map, n=2, obs=-1):
     # r = lambda x: np.random.randint(0, x)
     b1, b2 = area_map.shape
     point = []
-    for i in range(b2-1, 0, -1):
+    for i in range(0, b2-1, 1):
         for j in range(b1-1, 0, -1):
             p = (j, i)
             if area_map[p] != obs:

@@ -35,6 +35,7 @@ class Grid(object):
         self.x_in_meters = self.DistGPS(self.gps0, self.gps1, self.alt0, self.alt1)
         self.y_in_meters = self.DistGPS(self.gps0, self.gps3, self.alt0, self.alt1)
         self.gridUTMCoords = []
+        self.graph = nx.grid_graph(dim=[1, 1])
 
 
 
@@ -85,7 +86,7 @@ class Grid(object):
         self.graph = nx.grid_graph(dim=[width, height])
         for i in range(height):
             for j in range(width):
-                self.graph.nodes[(i, j)]['Values'] = areaMap[i][j]
+                # self.graph.nodes[(i, j)]['Values'] = areaMap[i][j]
                 self.graph.nodes[(i, j)]['UTM'] = np.array([self.xWorld[j], self.yWorld[height-i-1]])
 
 
@@ -130,7 +131,8 @@ class Grid(object):
 
     def calculateRouteUTM(self, coveragePath):
         path, self.curvePoints = self.steamlinePath(coveragePath)
-        # lenPath = len(path)
+        # len8Path = len(path)
+        print(f"CANTIDAD DE CURVAS:{len(self.curvePoints)}")
         dataPath = []
         for node in path:
             dataPath.append(self.graph.nodes[node]['UTM'])
